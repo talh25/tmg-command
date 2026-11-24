@@ -10,8 +10,11 @@ Not affiliated with or endorsed by Blizzard Entertainment or Archon Studio.
 - **Game tracker**: players, factions, mission, rounds and phases, victory points, the Supply Pool per
   round, a game clock and the result. An announcer calls rounds and phases.
 - **Unit tracker**: load each player's army list into the game and track every unit's status
-  (reserve, on table, lost), wounds, models left and shields. Supply on the table is worked out from
-  the units and checked against the Supply Pool.
+  (reserve, on table, lost), damage, Non-Lethal Damage, models left and shields, and mark each
+  Active or Reaction ability as used per round. Supply on the table is worked out from the units and
+  checked against the Supply Pool.
+- **Game log**: every phase, score, deployment, damage, ability use and note, by round and phase,
+  with copy or share.
 - **Army lists**: the Army Builder, with saved lists that the game tracker reads.
 - **Units and cards**: every unit's stats, weapons, abilities and upgrades; Faction, Tactical and
   Creep cards; a voice board for units and buildings.

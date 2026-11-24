@@ -2,13 +2,13 @@
 // - App files and data: saved at install. Online, the newest copy is used (and saved); offline, or
 //   when the network takes more than 3 seconds, the saved copy is used.
 // - Media (voices, music, images): saved the first time each file is used, or all at once from Settings.
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL_CACHE = 'tmg-shell-' + VERSION;
 const MEDIA_CACHE = 'tmg-media-v1';
 const SHELL = [
   './', 'index.html', 'manifest.webmanifest', 'css/app.css', 'icons/icon.svg', 'icons/icon-180.png', 'icons/icon-192.png',
   'js/app.js', 'js/lib.js', 'js/audio.js', 'js/armies.js', 'js/game.js', 'js/ruletext.js', 'js/unitcard.js',
-  'js/screens/home.js', 'js/screens/game.js', 'js/screens/tracker.js', 'js/screens/armies.js', 'js/screens/codex.js',
+  'js/screens/home.js', 'js/screens/game.js', 'js/screens/tracker.js', 'js/screens/log.js', 'js/screens/armies.js', 'js/screens/codex.js',
   'js/screens/rules.js', 'js/screens/music.js', 'js/screens/settings.js',
   'army/index.html', 'data/army.json', 'data/media.json', 'data/media-files.json', 'data/rules.json',
 ];

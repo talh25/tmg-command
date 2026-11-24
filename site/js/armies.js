@@ -93,18 +93,25 @@ export function trackUnit(faction, u, entry = null, sizeIndex = 0) {
     key: uid(), id: u.id, faction, name: u.name, size, ups: entry?.ups || {},
     models: (u.sizes[size] || u.sizes[0]).models, hp: Number(p.stats.hp) || 1, damage: 0,
     shields: Number(p.stats.shields) || 0, shieldDamage: 0, status: 'reserve',
+    nl: 0, uses: {},
   };
 }
 export function rosterToUnits(r) {
   if (!r) return [];
   return r.units.map((e) => { const u = findUnit(r.faction, e.id); return u ? trackUnit(r.faction, u, e) : null; }).filter(Boolean);
 }
-/** Models left, HP left on the wounded model, and current supply of a tracked unit. */
+/**
+ * Models left, HP left on the wounded model, and current supply of a tracked unit.
+ * t.damage is damage that has removed models; t.nl is Non-Lethal Damage waiting on the Damage Marker.
+ * It removes nobody until the unit next takes standard damage, when it is added in.
+ */
 export function condition(t) {
   const alive = t.models - Math.min(t.models, Math.floor(t.damage / t.hp));
   const u = findUnit(t.faction, t.id);
   return {
     alive,
+    nl: t.nl || 0,
+    marker: t.damage + (t.nl || 0),
     hpLeft: alive ? t.hp - (t.damage % t.hp) : 0,
     supply: u ? supplyFor(u, alive, profile(u, t).fixedSupply) : 0,
     lost: alive === 0 || t.status === 'lost',

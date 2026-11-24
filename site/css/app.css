@@ -300,3 +300,21 @@ mark { background: color-mix(in srgb, var(--warn) 35%, transparent); color: inhe
 .article table { border-collapse: collapse; font-size: 14px; min-width: 100%; }
 .article th, .article td { text-align: left; vertical-align: top; padding: 6px 8px; border-bottom: 1px solid var(--line); }
 .article th { color: var(--muted); font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+
+/* ---------- non-lethal damage, ability use, game log ---------- */
+.nl, .ability-uses { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.nl small { flex: 1; min-width: 12ch; }
+.nl.on small { color: var(--warn); }
+.nl.on { padding: 6px 8px; border-radius: 10px; background: color-mix(in srgb, var(--warn) 10%, transparent); }
+.ability-uses > small { flex-basis: 100%; }
+.chip.use { min-height: 34px; padding: 4px 12px; font-size: 13px; cursor: pointer; }
+.chip.use small { color: var(--muted); }
+.chip.use.used { border-color: var(--good); color: var(--good); }
+.log-list { display: grid; gap: 2px; align-content: start; }
+.unit-sheet > .log-list { flex: 1 1 0; min-height: 0; overflow-y: auto; }
+.log-head { margin: 10px 0 2px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.log-row { display: grid; grid-template-columns: 5ch 1fr; gap: 10px; align-items: baseline; padding: 6px 8px; border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; font-size: 14px; }
+.log-row.event { border-left-color: var(--line); color: var(--muted); }
+.log-row small { font-variant-numeric: tabular-nums; }
+.log-add { display: flex; gap: 8px; }
+.log-add input { flex: 1; min-width: 0; min-height: var(--tap); padding: 0 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 16px; }

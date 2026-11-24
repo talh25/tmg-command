@@ -2,11 +2,12 @@
 import { el, stepper, segmented, toast, confirmBox, pick, FACTIONS, FACTION_NAME, PHASES, PHASE_KEY } from '../lib.js';
 import {
   game, saveGame, setPlayerCount, supplyPool, supplyOnTable, poolText, startGame, advance, stepBack, finishGame,
-  leaders, addScore, newGame, MISSIONS, DEPLOYMENTS, PLAYER_COLORS,
+  leaders, addScore, newGame, note, MISSIONS, DEPLOYMENTS, PLAYER_COLORS,
 } from '../game.js';
 import { listRosters, rosterById, rosterTotals, rosterToUnits } from '../armies.js';
 import { announce, say, mediaData } from '../audio.js';
 import { openUnitSheet, unitSummary } from './tracker.js';
+import { openLog, logRow } from './log.js';
 
 const select = (options, value, onChange, label) => el('select', { 'aria-label': label, onchange: (e) => onChange(e.target.value) },
   options.map(([v, text]) => el('option', { value: v, selected: v === value }, text)));
@@ -73,12 +74,12 @@ function playerCard(p, i, redraw) {
     el('div.player-head',
       el('div', el('h2', p.name), el('small.muted', FACTION_NAME[p.faction])),
       el('button.badge' + (game.first === i ? '.on' : ''), { 'aria-pressed': String(game.first === i), title: 'First Player Marker',
-        onclick: () => { game.first = i; redraw(); } }, game.first === i ? '★ First player' : '☆ First')),
+        onclick: () => { if (game.first !== i) { game.first = i; note('Took the First Player Marker', { player: i }); } redraw(); } }, game.first === i ? '★ First player' : '☆ First')),
     el('div.counters',
-      el('div.counter', el('small', 'Victory points'), stepper(p.score, { min: 0, max: 99, big: true, label: `${p.name} victory points`, onChange: (v) => { addScore(p, v - p.score); } })),
+      el('div.counter', el('small', 'Victory points'), stepper(p.score, { min: 0, max: 99, big: true, label: `${p.name} victory points`, onChange: (v) => { addScore(p, v - p.score); redraw(); } })),
       el('div.counter', el('small', `Supply on table · pool ${poolText(pool)}`),
         tracked ? el('div.supply-read' + (used > pool ? '.over' : ''), el('b', String(used)), el('small', 'from units'))
-          : stepper(p.supply, { min: 0, max: 99, big: true, label: `${p.name} supply`, onChange: (v) => { p.supply = v; saveGame(); redraw(); } }))),
+          : stepper(p.supply, { min: 0, max: 99, big: true, label: `${p.name} supply`, onChange: (v) => { const d = v - p.supply; p.supply = v; note((n) => `Supply on table ${n > 0 ? '+' : ''}${n} · now ${p.supply}`, { player: i, key: 'sup:' + i, n: d }); redraw(); } }))),
     el('button.btn.wide', { onclick: () => openUnitSheet(p, redraw) }, tracked ? `Units · ${unitSummary(p)}` : 'Track units'));
 }
 
@@ -106,6 +107,9 @@ function playView(redraw) {
         el('button.btn', { disabled: game.round === 1 && game.phase === 0, onclick: () => { stepBack(); redraw(); } }, 'Back'),
         el('button.btn.primary.big', { onclick: next }, last ? 'Finish game' : game.phase === 3 ? `Start round ${game.round + 1}` : `Next: ${PHASES[game.phase + 1]}`))),
     el('div.players', game.players.map((p, i) => playerCard(p, i, redraw))),
+    el('section.card.log-card',
+      el('div.player-head', el('h2', 'Game log'), el('button.btn.small', { onclick: openLog }, `Open · ${game.log.length}`)),
+      el('div.log-list', game.log.slice(-4).reverse().map(logRow))),
     el('div.row.end',
       el('button.btn', { onclick: async () => { if (await confirmBox('End the game now?', 'The current scores decide the result.', 'End game')) { finishGame(); end(redraw); } } }, 'End game'),
       el('button.btn.danger', { onclick: async () => { if (await confirmBox('Abandon this game?', 'Scores and tracked units are cleared. Players and mission are kept.', 'Abandon')) { newGame(); redraw(); } } }, 'Abandon')));
@@ -132,6 +136,7 @@ function resultView(redraw) {
       el('p.muted', tie ? `${top.map((p) => p.name).join(' and ')} are level on ${top[0].score} VP.` : `${FACTION_NAME[top[0].faction]} victory with ${top[0].score} VP.`),
       el('div.list', ranked.map((p) => el('div.list-row', el('div', el('b', p.name), ' ', el('small.muted', FACTION_NAME[p.faction])), el('b', `${p.score} VP`)))),
       el('div.actions',
+        el('button.btn', { onclick: openLog }, 'Game log'),
         el('button.btn', { onclick: () => { Object.assign(game, { finished: false }); redraw(); } }, 'Back to the game'),
         el('button.btn.primary', { onclick: () => { newGame(); redraw(); } }, 'New game'))));
 }
