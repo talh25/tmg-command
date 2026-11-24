@@ -1,0 +1,15 @@
+# Local HTTPS certificates for tools/serve.py: made per computer, never commit.
+certs/
+*.pem
+*.key
+*.crt
+
+# OS, editor and tool clutter
+.DS_Store
+__pycache__/
+*.pyc
+node_modules/
+.vscode/
+.idea/
+.claude/
+*.log
